@@ -12,7 +12,7 @@ def format_article(s, width):
     else:
         return ''
 #actual article
-def articleWindow(article_link,doubly_ll):
+def articleWindow(article_link, doubly_ll):
     if soups.article(article_link):
         # create new window and it's geometry
         article_window = tk.Toplevel(topic)
