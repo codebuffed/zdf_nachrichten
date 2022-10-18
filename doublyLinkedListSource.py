@@ -33,7 +33,6 @@ class DoublyLinkedList:
         self.head = None
         for ele in arr:
             self.head = self.append(ele)
-
         return self.head
 
     # def printt(self):

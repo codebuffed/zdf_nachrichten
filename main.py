@@ -6,11 +6,13 @@ import doublyLinkedListSource as dll
 import textwrap
 
 def format_article(s, width):
-    result = textwrap.fill(s, width=width, break_long_words=True)+2*'\n'
-    return result
-
+    if s:
+        result = textwrap.fill(s, width=width)+2*'\n'
+        return result
+    else:
+        return ''
 #actual article
-def articleWindow(article_link):
+def articleWindow(article_link,doubly_ll):
     if soups.article(article_link):
         # create new window and it's geometry
         article_window = tk.Toplevel(topic)
@@ -29,7 +31,7 @@ def articleWindow(article_link):
         label_title = tk.Label(article_window, text='\n'.join(titles), underline=True, font=('Helvetica',20))
         label_title.grid(row=0, column=0)
 
-        text = tk.Text(article_window, width=20, height=30, font=('helvetica',18))
+        text = tk.Text(article_window, width=60, height=30, font=('helvetica',18))
         text.grid(row=1,column=0, sticky='nsew')
 
         button_frame = tk.Frame(article_window, height=5, width=40)
@@ -37,7 +39,7 @@ def articleWindow(article_link):
 
         # the 'text content' of the article is stored in the second element of a tuple from soups.article as a list
         for p in content[1]:
-             text.insert(tk.END, format_article(p, 40))
+             text.insert(tk.END, format_article(p, 60))
 
 
         for key, val in content[0].items():
@@ -58,6 +60,7 @@ def articleWindow(article_link):
             prev_button.grid(row=0, column=0)
         else:
             prev_button = tk.Button(button_frame, text='<<',
+                                    command=lambda: change_article(False),
                                     state=tk.DISABLED,
                                     pady=40,
                                     padx=40,
@@ -84,6 +87,7 @@ def articleWindow(article_link):
             next_button.grid(row=0, column=2,)
         else:
             next_button = tk.Button(button_frame, text='>>',
+                                    command= lambda : change_article(True),
                                     state=tk.DISABLED,
                                     pady=40,
                                     padx=40,
@@ -92,7 +96,7 @@ def articleWindow(article_link):
             next_button.grid(row=0, column=2)
 
         # keep window \\ configure all widgets corresponding to the article
-        def change_article(forward=True):
+        def change_article(forward):
             nonlocal node
             nonlocal label_title
             nonlocal text
@@ -112,10 +116,11 @@ def articleWindow(article_link):
             #change text.Text string
             text.delete('1.0', 'end')
             for p in content[1]:
-                text.insert(tk.END, format_article(p, 40))
+                text.insert(tk.END, format_article(p, 60))
             for key, val in content[0].items():
                 if key!='titles':
                     text.insert(tk.END, '{} : {}\n'.format(key, val))
+
             # update state next_button
             if node.next:
                 next_button.config(state=tk.NORMAL)
@@ -129,26 +134,23 @@ def articleWindow(article_link):
                 prev_button.config(state=tk.DISABLED)
 
 
-
 #Section
-def newWindow(s):
+def newWindow(section):
     global topic
-    global doubly_ll
     doubly_ll = dll.DoublyLinkedList()
-    doubly_ll.arr_to_list(soups.heads(s).keys())
+    doubly_ll.arr_to_list(soups.heads(section).keys())
     topic = tk.Toplevel(root)
-    topic.title(s.capitalize())
+    topic.title(section.capitalize())
     topic.geometry('700x500')
     topic.config(bg='blue')
-
-    content = soups.heads(s)
+    content = soups.heads(section)
     lst_button = []
     lst_label = []
 
     for idx, key in enumerate(content):
 
         lst_label.append(tk.Label(topic,text='\n'.join(content.get(key))))
-        lst_button.append(tk.Button(topic, text='mehr Lesen', command=lambda key=key: articleWindow(key)))
+        lst_button.append(tk.Button(topic, text='mehr Lesen', command=lambda key=key: articleWindow(key,doubly_ll)))
         lst_label[idx].grid(row=idx, column=0, padx=5, pady=5)
         lst_button[idx].grid(row=idx, column=1, padx=5, pady=5)
 
