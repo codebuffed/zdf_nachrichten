@@ -2,7 +2,7 @@
 ZDF News Scraper
 
 to Do:
-- make a Darkreader mode for the articleWindow using config libary to save options
+- make a Darkreader mode for the articleWindow using configparser libary to save options
 
 - add last updated in newWindow (bottom left)?
 
